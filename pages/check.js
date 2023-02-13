@@ -5,7 +5,7 @@ const Check = ({listings}) => {
     console.log(listings)
     return (
         <div>
-          <p>{listing.name}</p>
+          <p>{listings.name}</p>
         </div>
     )
 }
