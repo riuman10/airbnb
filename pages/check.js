@@ -1,22 +1,41 @@
-import { connectToDatabase } from "../lib/mongodb";
+// import { connectToDatabase } from "../lib/mongodb";
+import { useEffect, useState } from "react";
 
+const Check = () => {
+  const [restaurents, setRestaurants] = useState([]);
 
-const Check = ({listings}) => {
-    console.log(listings)
-    return (
-        <div>
-          <p>{listings.name}</p>
-        </div>
-    )
-}
+  const getData = async () => {
+    const results = await fetch("/api/listing").then((response) =>
+      response.json()
+    );
+    setRestaurants(results.results.map((item) => {
+      return {
+        id : item._id,
+        name : item.name,
+        image : item.images,
+        house_rules : item.house_rules,
+        notes : item.notes,
+        summary : item.summary
+      }
+    }));
+  };
 
-export async function getServerSideProps(context) {
-    const {db} = await connectToDatabase();
-    const listing = await db.collection("listingsAndReviews").find({}).limit(20).toArray();
-    const listings = JSON.parse(JSON.stringify(listing)) 
-    return {
-      props: { listings },
-    };
-  }
+  useEffect(() => {
+    getData();
+  }, []);
+  console.log(restaurents);
+  return (
+    <div>
+      {
+        restaurents && restaurents.map((item , i) => (
+          <div>
+            <p className="text-red-400">{item.name}</p>
+            <p>{item.house_rules}</p>
+          </div>
+        ))
+      }
+    </div>
+  );
+};
 
 export default Check;
