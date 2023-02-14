@@ -5,5 +5,9 @@ export default async function handler(request, response) {
   const data = request.body;
 
   const postLike = await database.collection("likes").insertOne(data);
-  response.status(200).json({ message: "Data inserted successfully!" });
+
+  const results = await database.collection("likes").find({}).limit(20).toArray();
+
+
+  response.status(200).json(results);
 }
